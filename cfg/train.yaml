@@ -1,0 +1,38 @@
+hydra:
+  job: 
+    chdir : True
+  run:
+    dir: ${dir}
+
+defaults:
+  - _self_
+  - model : base.yaml
+  - dataset : base.yaml
+  - metric : pf1.yaml
+
+dir: ${save_path}/${now:%Y-%m-%d_%H-%M-%S}
+
+save_root: /opt/rsna/logs
+save_path: ${save_root}/
+
+logger: 
+  wandb:
+    _target_: wandb.init
+    project: 'kaggle'
+    group: 'vision'
+    job_type: 'train'
+
+trainer:
+  _target_: train
+  min_epochs: 1 # prevents early stopping
+  max_epochs: 400
+  eval_period : 40
+  precision: False
+  multi_scale: False
+  gradient_clip_algorithm: norm
+  gradient_clip_val: 1
+
+  
+task_name: "train"
+ckpt_path: ???
+use_debug: False 
